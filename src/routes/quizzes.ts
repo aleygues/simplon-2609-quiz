@@ -5,4 +5,4 @@ import { createQuizSchema } from "../schemas/quizzes";
 
 export const quizzesRouter = express.Router();
 
-quizzesRouter.post("/", validate(createQuizSchema), createQuiz); // create quiz
+quizzesRouter.post("/", validate(createQuizSchema), createQuiz);

@@ -12,6 +12,12 @@ const TABLES_SQL = `
     title VARCHAR(255) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   );
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    hashed_password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
 `;
 
 async function createDatabase() {

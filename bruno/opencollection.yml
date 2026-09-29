@@ -1,7 +1,7 @@
 opencollection: 1.0.0
 
 info:
-  name: Quiz
+  name: quiz-app
 config:
   proxy:
     inherit: true

@@ -1,6 +1,7 @@
 import express from "express";
 import { quizzesRouter } from "./routes/quizzes";
 import { setupDb } from "./db";
+import { usersRouter } from "./routes/users";
 
 const port = process.env.PORT || 3301;
 
@@ -14,6 +15,7 @@ async function main() {
   });
 
   app.use(express.json());
+  app.use("/api/users", usersRouter);
   app.use("/api/quizzes", quizzesRouter);
 
   app.use((req, res) => {
