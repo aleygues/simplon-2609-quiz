@@ -11,13 +11,15 @@ http:
     data: |-
       {
         "email": "{{user1email}}",
-        "password": "SuperSecret!3"
+        "password": "{{user1password}}"
       }
 
 runtime:
   scripts:
     - type: before-request
-      code: bru.setVar("user1email", `test1-${Date.now()}@aleygues.fr`)
+      code: |-
+        bru.setVar("user1email", `test1-${Date.now()}@aleygues.fr`);
+        bru.setVar("user1password", "SuperSecret!3");
     - type: tests
       code: |-
         test("user has an id", () => {

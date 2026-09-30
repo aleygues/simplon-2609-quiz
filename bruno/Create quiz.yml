@@ -1,11 +1,15 @@
 info:
   name: Create quiz
   type: http
-  seq: 2
+  seq: 3
 
 http:
   method: POST
   url: "{{api}}/quizzes"
+  headers:
+    - name: Authorization
+      value: ""
+      disabled: true
   body:
     type: json
     data: |-

@@ -11,3 +11,5 @@ export const createUserSchema = z.object({
     .refine((password) => /[0-9]/.test(password))
     .refine((password) => /[!@#$%^&*]/.test(password)),
 });
+
+export const createTokenSchema = createUserSchema;
