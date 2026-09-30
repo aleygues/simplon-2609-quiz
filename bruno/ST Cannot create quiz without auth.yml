@@ -1,21 +1,20 @@
 info:
-  name: Create quiz
+  name: ST Cannot create quiz without auth
   type: http
-  seq: 4
+  seq: 5
 
 http:
   method: POST
   url: "{{api}}/quizzes"
-  headers:
-    - name: Authorization
-      value: ""
-      disabled: true
   body:
     type: json
     data: |-
       {
         "title": "My first quiz"
       }
+  auth:
+    type: bearer
+    token: "{{user1token}}"
 
 runtime:
   scripts:

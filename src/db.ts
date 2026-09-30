@@ -7,15 +7,16 @@ const DB_HOST = process.env.DB_HOST || "db";
 const DB_PORT = Number(process.env.DB_PORT || 5432);
 
 const TABLES_SQL = `
-  CREATE TABLE IF NOT EXISTS quizzes (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-  );
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
     hashed_password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+  CREATE TABLE IF NOT EXISTS quizzes (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    created_by INTEGER REFERENCES users (id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   );
 `;
