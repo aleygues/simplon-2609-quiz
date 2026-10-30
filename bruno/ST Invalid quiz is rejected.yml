@@ -1,7 +1,7 @@
 info:
   name: ST Invalid quiz is rejected
   type: http
-  seq: 6
+  seq: 7
 
 http:
   method: POST

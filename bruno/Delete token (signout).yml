@@ -1,0 +1,16 @@
+info:
+  name: Delete token (signout)
+  type: http
+  seq: 8
+
+http:
+  method: DELETE
+  url: "{{api}}/users/tokens"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -16,15 +16,11 @@ http:
 
 runtime:
   scripts:
-    - type: after-response
-      code: |-
-        const json = res.body;
-        bru.setVar("user1token", json.token);
     - type: tests
       code: |-
-        test("token is returned", () => {
+        test("OK is returned", () => {
           const json = res.body;
-          expect(json.token).to.be.a("string");
+          expect(json.ok).to.eq(true);
         })
 
 settings:

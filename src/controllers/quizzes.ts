@@ -15,3 +15,11 @@ export async function createQuiz(req: express.Request, res: express.Response) {
 
   res.status(201).json(quiz);
 }
+
+export async function deleteQuizz(req: express.Request, res: express.Response) {
+  const { id } = req.params;
+
+  await db.query("DELETE FROM quizzes WHERE id = $1", [id]);
+
+  res.status(204).send();
+}

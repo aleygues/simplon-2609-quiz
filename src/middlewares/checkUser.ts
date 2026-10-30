@@ -1,63 +1,66 @@
 import express from "express";
 import jsonwebtoken from "jsonwebtoken";
 import { db } from "../db";
+import Cookies from "cookies";
 
-export async function checkUser(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) {
-  const authorization = req.headers.authorization;
+export function checkUser(roles: string[] = []) {
+  return async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    const cookies = new Cookies(req, res);
+    const token = cookies.get("token");
+    // req.headers.cookie
 
-  if (!authorization) {
-    res.status(403).json({
-      message: "access denied",
-    });
-    return;
-  }
-
-  const token = authorization.split(" ")[1] as string;
-
-  if (!token) {
-    res.status(403).json({
-      message: "access denied",
-    });
-    return;
-  }
-
-  try {
-    const payload = jsonwebtoken.verify(
-      token,
-      process.env.JWT_SECRET as string,
-    ) as { userId: number };
-
-    if (!payload.userId) {
+    if (!token) {
       res.status(403).json({
         message: "access denied",
       });
       return;
     }
 
-    const result = await db.query(`SELECT * FROM users WHERE id = $1`, [
-      payload.userId,
-    ]);
-    const user = result.rows[0];
+    try {
+      const payload = jsonwebtoken.verify(
+        token,
+        process.env.JWT_SECRET as string,
+      ) as { userId: number };
 
-    if (!user) {
+      if (!payload.userId) {
+        res.status(403).json({
+          message: "access denied",
+        });
+        return;
+      }
+
+      const result = await db.query(`SELECT * FROM users WHERE id = $1`, [
+        payload.userId,
+      ]);
+      const user = result.rows[0];
+
+      if (!user) {
+        res.status(403).json({
+          message: "access denied",
+        });
+        return;
+      }
+
+      // you may check roles here
+      if (roles.includes(user.role) === false) {
+        res.status(403).json({
+          message: "access denied",
+        });
+        return;
+      }
+
+      delete user.hashed_password;
+      (req as any).user = user;
+      next();
+    } catch {
       res.status(403).json({
         message: "access denied",
       });
       return;
     }
-
-    // you may check roles here
-
-    (req as any).user = user;
-    next();
-  } catch {
-    res.status(403).json({
-      message: "access denied",
-    });
-    return;
-  }
+  };
 }

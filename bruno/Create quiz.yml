@@ -12,9 +12,6 @@ http:
       {
         "title": "My first quiz"
       }
-  auth:
-    type: bearer
-    token: "{{user1token}}"
 
 runtime:
   scripts:
