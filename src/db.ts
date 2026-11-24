@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 
-const DB_NAME = process.env.DB_NAME || "quiz";
+const DB_NAME = process.env.DB_NAME || "postgres";
 const DB_USER = process.env.DB_USER || "postgres";
 const DB_PASSWORD = process.env.DB_PASSWORD || "supersecret";
 const DB_HOST = process.env.DB_HOST || "db";
