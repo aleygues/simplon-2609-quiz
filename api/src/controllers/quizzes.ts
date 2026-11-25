@@ -1,17 +1,18 @@
 import express from "express";
-import { db } from "../db";
+import { ObjectId } from "mongodb";
+import { Quiz } from "../entities/Quiz";
+import { User } from "../entities/User";
 
 export async function createQuiz(req: express.Request, res: express.Response) {
   // req.body has already been validated by the validate middleware
   const { title } = req.body;
 
-  const user: { id: number } = (req as any).user;
+  const user: User = (req as any).user;
 
-  const result = await db.query(
-    "INSERT INTO quizzes (title, created_by) VALUES ($1, $2) RETURNING *",
-    [title, user.id],
-  );
-  const quiz = result.rows[0];
+  const quiz = await Quiz.create({
+    title,
+    createdBy: { id: user.id },
+  }).save();
 
   res.status(201).json(quiz);
 }
@@ -19,7 +20,7 @@ export async function createQuiz(req: express.Request, res: express.Response) {
 export async function deleteQuizz(req: express.Request, res: express.Response) {
   const { id } = req.params;
 
-  await db.query("DELETE FROM quizzes WHERE id = $1", [id]);
+  await Quiz.delete({ id: new ObjectId(id as string) });
 
   res.status(204).send();
 }

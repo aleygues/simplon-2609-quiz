@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { db } from "../db";
+import { ObjectId } from "mongodb";
+import { Repository } from "typeorm";
+import { AppDataSource } from "../datasource";
 
 export function checkOwnership(
   tableName: string,
@@ -27,11 +29,11 @@ export function checkOwnership(
       return;
     }
 
-    const result = await db.query(
-      `SELECT * FROM ${tableName} WHERE id = $1 AND created_by = $2`,
-      [id, user.id],
-    );
-    const item = result.rows[0];
+    const repository = AppDataSource.getRepository(tableName) as Repository<any>;
+    const item = await repository.findOneBy({
+      id: new ObjectId(id as string),
+      createdBy: { id: user.id },
+    });
 
     if (!item) {
       res.status(404).json({

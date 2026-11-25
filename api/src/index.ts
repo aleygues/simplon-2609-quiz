@@ -1,6 +1,6 @@
 import express from "express";
 import { quizzesRouter } from "./routes/quizzes";
-import { setupDb } from "./db";
+import { setupDb } from "./datasource";
 import { usersRouter } from "./routes/users";
 
 const port = process.env.PORT || 3301;

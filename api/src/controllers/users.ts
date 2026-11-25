@@ -1,8 +1,8 @@
 import express from "express";
-import { db } from "../db";
 import argon2 from "argon2";
 import jsonwebtoken from "jsonwebtoken";
 import Cookies from "cookies";
+import { User } from "../entities/User";
 
 export async function createUser(req: express.Request, res: express.Response) {
   // req.body has already been validated by the validate middleware
@@ -10,13 +10,13 @@ export async function createUser(req: express.Request, res: express.Response) {
 
   const hashedPassword = await argon2.hash(password);
 
-  const result = await db.query(
-    "INSERT INTO users (email, hashed_password, role) VALUES ($1, $2, $3) RETURNING *",
-    [email, hashedPassword, "user"],
-  );
-  const user = result.rows[0];
+  const user = await User.create({
+    email,
+    hashedPassword,
+    role: "user",
+  }).save();
 
-  delete user.hashed_password;
+  delete (user as any).hashedPassword;
 
   res.status(201).json(user);
 }
@@ -25,14 +25,11 @@ export async function createToken(req: express.Request, res: express.Response) {
   // req.body has already been validated by the validate middleware
   const { email, password } = req.body;
 
-  const result = await db.query(`SELECT * FROM users WHERE email = $1`, [
-    email,
-  ]);
-  const user = result.rows[0];
+  const user = await User.findOneBy({ email });
 
   if (
     !user ||
-    (await argon2.verify(user.hashed_password, password)) === false
+    (await argon2.verify(user.hashedPassword, password)) === false
   ) {
     res.status(400).json({ message: "invalid credentials" });
     return;

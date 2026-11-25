@@ -24,7 +24,7 @@ runtime:
       code: |-
         test("user has an id", () => {
           const json = res.body;
-          expect(json.id).to.be.a("number");
+          expect(json.id).to.be.a("string");
         })
 
         test("user has an email", () => {

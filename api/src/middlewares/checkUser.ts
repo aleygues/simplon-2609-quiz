@@ -1,7 +1,8 @@
 import express from "express";
 import jsonwebtoken from "jsonwebtoken";
-import { db } from "../db";
+import { ObjectId } from "mongodb";
 import Cookies from "cookies";
+import { User } from "../entities/User";
 
 export function checkUser(roles: string[] = []) {
   return async (
@@ -24,7 +25,7 @@ export function checkUser(roles: string[] = []) {
       const payload = jsonwebtoken.verify(
         token,
         process.env.JWT_SECRET as string,
-      ) as { userId: number };
+      ) as { userId: string };
 
       if (!payload.userId) {
         res.status(403).json({
@@ -33,10 +34,7 @@ export function checkUser(roles: string[] = []) {
         return;
       }
 
-      const result = await db.query(`SELECT * FROM users WHERE id = $1`, [
-        payload.userId,
-      ]);
-      const user = result.rows[0];
+      const user = await User.findOneBy({ id: new ObjectId(payload.userId) });
 
       if (!user) {
         res.status(403).json({
@@ -53,7 +51,7 @@ export function checkUser(roles: string[] = []) {
         return;
       }
 
-      delete user.hashed_password;
+      delete (user as any).hashedPassword;
       (req as any).user = user;
       next();
     } catch {
