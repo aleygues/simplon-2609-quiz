@@ -25,7 +25,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
       - name: Run tests
-        shell: |
+        run: |
           cd api
           npm install
           npm test
