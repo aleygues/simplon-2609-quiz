@@ -7,7 +7,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "test": "cd bruno && bru run . --env Local",
+    "test": "exit 1;",
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts"
