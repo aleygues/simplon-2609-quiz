@@ -11,6 +11,7 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+        
   mongodb:
     image: mongo:latest
     volumes:
