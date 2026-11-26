@@ -1,0 +1,32 @@
+services:
+  api:
+    build: 
+      context: ./api
+    ports:
+      - 3302:3301
+    volumes:
+      - ./api/src:/app/src
+    environment:
+      DB_HOST: ${DB_HOST}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - /data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://${DB_HOST}:27017/
+    depends_on:
+      mongodb:
+        condition: service_healthy
